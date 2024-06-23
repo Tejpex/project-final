@@ -24,4 +24,4 @@ We also should have communicated better about connecting the backend with the fr
 ## View it live
 
 Frontend: https://pluggin.netlify.app/
-Backend: https://technigo-final-project-pluggin.onrender.com
+Backend: https://technigo-pluggin.onrender.com
