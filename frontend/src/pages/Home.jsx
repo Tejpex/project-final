@@ -1,14 +1,17 @@
-// Import necessary dependencies and components.
+//External imports for basic functionality
 import styled, { css } from "styled-components"
 import { Link } from "react-router-dom"
+
+//Internal imports of components
 import { Hero } from "../components/Hero"
 import { Footer } from "../components/Footer"
+
+//Images
 import HeaderImg from "/src/assets/HeaderWeb.jpg"
 import HeaderImgTabl from "/src/assets/HeaderTablet.jpg"
 
 // Define the 'Home' functional component.
 export const Home = () => {
-  // Render the component content.
   return (
     <>
       <HomeContainer>
@@ -111,6 +114,7 @@ const GameCard = styled.div`
   height: 80px;
   margin: 12px auto;
   color: white;
+  text-shadow: 1px 1px 2px black;
   background-color: var(--forest);
   font-size: 30px;
 

@@ -5,7 +5,7 @@ import heroImgUrlTabl from "/src/assets/ProgressHeaderTablet.jpg"
 
 export const Hero = () => {
   const { user } = useUser()
-
+  
   const content = {
     heroTitle: `Hej ${user?.firstName} 👋`,
     intro:

@@ -1,91 +1,93 @@
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { useState, useEffect } from "react";
-import { useMath } from "../../contexts/MathContext";
-import Lottie from "lottie-react";
-import Right from "../../assets/Right.json";
-import Wrong from "../../assets/Wrong.json";
-import { useScore } from "../../contexts/ScoreContext";
+import PropTypes from "prop-types"
+import styled, { css } from "styled-components"
+import { useState, useEffect } from "react"
+import { useMath } from "../../contexts/MathContext"
+import Lottie from "lottie-react"
+import Right from "../../assets/Right.json"
+import Wrong from "../../assets/Wrong.json"
+import { useScore } from "../../contexts/ScoreContext"
 
 export const MathQuestion = ({ focusRef, type }) => {
-  const { mathGame, setMathGame, generateQuestion } = useMath();
-  const { registerAnswer } = useScore();
-  const currentScore = mathGame[Number(type)].score;
+  const { mathGame, setMathGame, generateQuestion } = useMath()
+  const { registerAnswer } = useScore()
+  const currentScore = mathGame[Number(type)].score
 
-  const [message, setMessage] = useState("");
-  const [answerInput, setAnswerInput] = useState("");
-  const numPadNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const [rightLottie, setRightLottie] = useState(false);
-  const [wrongLottie, setWrongLottie] = useState(false);
-  const subcategory = mathGame[Number(type)].subcategory;
+  const [message, setMessage] = useState("")
+  const [answerInput, setAnswerInput] = useState("")
+  const numPadNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  const [rightLottie, setRightLottie] = useState(false)
+  const [wrongLottie, setWrongLottie] = useState(false)
+  const subcategory = mathGame[Number(type)].subcategory
 
   useEffect(() => {
-    generateQuestion(Number(type));
+    generateQuestion(Number(type))
     if (focusRef.current) {
-      focusRef.current.focus();
+      focusRef.current.focus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   //Checks if input matches correctAnswer and gives the user a message of "right/wrong"
   //Then starts a new question
   const checkAnswer = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (answerInput == mathGame[Number(type)].correctAnswer) {
-      setTimeout(() => setRightLottie(true), 500);
-      setTimeout(() => setRightLottie(false), 4600);
+      setTimeout(() => setRightLottie(true), 500)
+      setTimeout(() => setRightLottie(false), 4600)
 
-      const newGame = [...mathGame];
-      setTimeout(() => (newGame[Number(type)].score = currentScore + 1), 3000);
-      setTimeout(() => setMathGame(newGame), 3000);
+      const newGame = [...mathGame]
+      setTimeout(() => (newGame[Number(type)].score = currentScore + 1), 3000)
+      setTimeout(() => setMathGame(newGame), 3000)
 
       // Send answer to backend
-      try {
-        await registerAnswer({
-          subject: "math",
-          level: newGame[type].level,
-          subcategory: subcategory,
-          score: currentScore + 1,
-        });
-      } catch (err) {
-        console.error("Error registration answer", err);
-      }
+      setTimeout(async () => {
+        try {
+          await registerAnswer({
+            subject: "math",
+            level: newGame[type].level,
+            subcategory: subcategory,
+            score: currentScore + 1,
+          })
+        } catch (err) {
+          console.error("Error registration answer", err)
+        }
+      }, 3000)
     } else {
-      setTimeout(() => setWrongLottie(true), 500);
+      setTimeout(() => setWrongLottie(true), 500)
       setTimeout(
         () =>
           setMessage(`Rätt svar var ${mathGame[Number(type)].correctAnswer}.`),
         2500
-      );
-      setTimeout(() => setWrongLottie(false), 4600);
+      )
+      setTimeout(() => setWrongLottie(false), 4600)
     }
-    setTimeout(() => newQuestion(), 4500);
-  };
+    setTimeout(() => newQuestion(), 4500)
+  }
 
   //Resets message and input-field before generating new question
   const newQuestion = () => {
-    setMessage("");
-    setAnswerInput("");
-    generateQuestion(Number(type));
+    setMessage("")
+    setAnswerInput("")
+    generateQuestion(Number(type))
     if (focusRef.current) {
-      focusRef.current.focus();
+      focusRef.current.focus()
     }
-  };
+  }
 
   //Puts users click on number-buttons into the inputfield
   const handleNumPadClick = (number) => {
-    setAnswerInput((prev) => prev + number.toString());
+    setAnswerInput((prev) => prev + number.toString())
     if (focusRef.current) {
-      focusRef.current.focus();
+      focusRef.current.focus()
     }
-  };
+  }
 
   const handleDeleteClick = () => {
-    setAnswerInput("");
+    setAnswerInput("")
     if (focusRef.current) {
-      focusRef.current.focus();
+      focusRef.current.focus()
     }
-  };
+  }
 
   if (mathGame[Number(type)].level < 4) {
     return (
@@ -136,7 +138,7 @@ export const MathQuestion = ({ focusRef, type }) => {
       </div>
     )
   } else {
-    return <Title>Du har klarat alla nivåer! Grattis!</Title>;
+    return <Title>Du har klarat alla nivåer! Grattis!</Title>
   }
 }
 
@@ -156,6 +158,7 @@ const QuestionCard = styled.div`
   font-size: 30px;
   background-color: var(--ocean);
   color: white;
+  text-shadow: 1px 1px 2px black;
   padding: 20px;
   margin: 10px auto;
   z-index: 1;
@@ -213,6 +216,7 @@ const AnswerInput = styled.input`
 
 const AnswerBtn = styled.button`
   color: white;
+  text-shadow: 1px 1px 2px black;
   background-color: var(--ocean);
   border-radius: 10px;
   border: none;
@@ -274,6 +278,7 @@ const NumPadBtn = styled.button`
   border: none;
   background-color: var(--ocean);
   color: white;
+  text-shadow: 1px 1px 2px black;
   padding: 10px 20px;
   font-size: 18px;
   cursor: pointer;

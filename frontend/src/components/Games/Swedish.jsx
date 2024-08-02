@@ -1,13 +1,19 @@
-import styled from "styled-components"
-import { IoArrowBackCircleOutline } from "react-icons/io5"
-import { LiaReadme } from "react-icons/lia"
-import Lottie from "lottie-react"
-import { Link } from "react-router-dom"
+//External imports for handling basic functionality
+//ADD UseRef TO HANDLE FOCUS-SHIFT
 import { useState } from "react"
+import { Link } from "react-router-dom"
+
+//For handling UI
+import styled from "styled-components"
+import Lottie from "lottie-react"
+import Celebrate from "../../assets/Celebrate.json" /*New-level-animation*/
+import { IoArrowBackCircleOutline } from "react-icons/io5" /*Go-back-icon*/
+import { LiaReadme } from "react-icons/lia" /*Synonyms-icon*/
+
+//Internal imports
 import { useScore } from "../../contexts/ScoreContext.jsx"
 import { LanguageQuestion } from "./LanguageQuestion.jsx"
 import { Footer } from "../Footer"
-import Celebrate from "../../assets/Celebrate.json"
 
 export const Swedish = () => {
   const { swedishGame, celebrateLottie } = useScore()
@@ -22,7 +28,10 @@ export const Swedish = () => {
       <SwedishGameSite>
         <HeaderDiv>
           <TitleDiv>
-            <BackButton onClick={() => setGameTypeNumber(null)}>
+            <BackButton
+              onClick={() => setGameTypeNumber(null)}
+              aria-label="Go back"
+            >
               <BackIcon />
             </BackButton>
             <Title>{swedishGame[Number(gameTypeNumber)].title}</Title>
@@ -64,8 +73,8 @@ export const Swedish = () => {
         <SwedishGameSite>
           <HeaderDiv>
             <TitleDiv>
-              <BackButton>
-                <Link to="/spela">
+              <BackButton aria-label="Go back">
+                <Link to="/spela" aria-label="Tillbaka till spela-sidan">
                   <BackIcon />
                 </Link>
               </BackButton>
@@ -203,6 +212,7 @@ const Choices = styled.div`
 const GameTypeButton = styled.button`
   background-color: var(--sunset);
   color: white;
+  text-shadow: 1px 1px 2px black;
   font-size: 18px;
   width: 270px;
   height: 70px;

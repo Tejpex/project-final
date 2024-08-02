@@ -178,7 +178,7 @@ export const RegistrationForm = () => {
             zIndex: 2,
             position: "absolute",
             right: 10,
-            bottom: 1,          
+            bottom: 1,
           }}
         />
       )}

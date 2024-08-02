@@ -31,9 +31,13 @@ export const SlideInPanel = ({ isOpen, onClose, children, panelType }) => {
   }, [isOpen, panelType])
 
   return (
-    <PanelContainer ref={panelRef} $isOpen={isOpen} $panelType={currentPanelType}>
+    <PanelContainer
+      ref={panelRef}
+      $isOpen={isOpen}
+      $panelType={currentPanelType}
+    >
       <CloseButton onClick={onClose}>×</CloseButton>
-        {children}
+      {children}
     </PanelContainer>
   )
 }

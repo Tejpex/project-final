@@ -65,29 +65,29 @@ export const LevelProgressBar = ({ progress, selectedSubject }) => {
 
 const LevelProgressH1 = styled.h1`
   margin-bottom: 10px;
-`;
+`
 
 const LevelContainer = styled.div`
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
-`;
+`
 
 const LevelWrapper = styled.div`
   margin-top: 10px;
   margin-bottom: 20px;
-`;
+`
 
 const LevelProgress = styled.div`
   margin: 10px 0;
-`;
+`
 
 const ProgressBar = styled.div`
   border-radius: 30px;
   margin: 5px 0;
   background-color: lightgray;
   height: 15px;
-`;
+`
 
 const ProgressForSubjects = styled.div`
   height: 100%;
@@ -96,18 +96,18 @@ const ProgressForSubjects = styled.div`
   background-color: ${({ className }) => {
     switch (className) {
       case "crl-swedish":
-        return "var(--sunsetshadow)";
+        return "var(--sunsetshadow)"
       case "crl-math":
-        return "var(--oceanshadow)";
+        return "var(--oceanshadow)"
       case "crl-english":
-        return "var(--forest)";
+        return "var(--forest)"
       default:
-        return "gray";
+        return "gray"
     }
   }};
-`;
+`
 
 LevelProgressBar.propTypes = {
   progress: PropTypes.object.isRequired,
   selectedSubject: PropTypes.string,
-};
+}

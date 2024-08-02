@@ -10,7 +10,7 @@ export const Hero = () => {
   const content = {
     heading: "Välkommen till Pluggin'",
     intro:
-      "Sidan där du kan förbättra dina kunskaper i olika skolämnen. Registrera dig för att spara dina framsteg i spelen."
+      "Sidan där du kan förbättra dina kunskaper i olika skolämnen. Registrera dig för att spara dina framsteg i spelen.",
   }
 
   const openPanel = () => {
@@ -28,7 +28,11 @@ export const Hero = () => {
         <HeroIntro>{content.intro}</HeroIntro>
         <Button onClick={openPanel}>Registrera dig</Button>
       </TextContainer>
-      <SlideInPanel isOpen={isPanelOpen} onClose={closePanel} panelType="register">
+      <SlideInPanel
+        isOpen={isPanelOpen}
+        onClose={closePanel}
+        panelType="register"
+      >
         <RegistrationForm />
       </SlideInPanel>
     </HeroContainer>
