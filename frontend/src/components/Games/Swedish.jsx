@@ -1,6 +1,5 @@
 //External imports for handling basic functionality
-//ADD UseRef TO HANDLE FOCUS-SHIFT
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Link } from "react-router-dom"
 
 //For handling UI
@@ -12,14 +11,16 @@ import { LiaReadme } from "react-icons/lia" /*Synonyms-icon*/
 import { ImAngry } from "react-icons/im" /*Hangman-icon*/
 
 //Internal imports
-import { useScore } from "../../contexts/ScoreContext.jsx"
+import { useLanguage } from "../../contexts/LanguageContext.jsx"
 import { LanguageQuestion } from "./LanguageQuestion.jsx"
+import { Hangman } from "./Hangman.jsx"
 import { Footer } from "../Footer"
 import { GameTypeButton } from "../Cards.jsx"
 
 export const Swedish = () => {
-  const { swedishGame, celebrateLottie } = useScore()
+  const { swedishGame, celebrateLottie } = useLanguage()
   const [gameTypeNumber, setGameTypeNumber] = useState()
+  const focusRef = useRef(null)
 
   const handleChoice = (gameNumber) => {
     setGameTypeNumber(gameNumber)
@@ -60,13 +61,17 @@ export const Swedish = () => {
             </Score>
           </Progress>
         </HeaderDiv>
-
-        <LanguageQuestion
-          type={gameTypeNumber}
-          language="swedish"
-          color="sunset"
-          subcategory="synonyms"
-        />
+        {gameTypeNumber == 0 && (
+          <LanguageQuestion
+            type={gameTypeNumber}
+            language="swedish"
+            color="sunset"
+            subcategory="synonyms"
+          />
+        )}
+        {gameTypeNumber == 1 && (
+          <Hangman focusRef={focusRef} type={gameTypeNumber} />
+        )}
       </SwedishGameSite>
     )
   } else {
@@ -104,19 +109,19 @@ export const Swedish = () => {
             </GameTypeButton>
             <GameTypeButton
               color="sunset"
-              value="0"
+              value="1"
               onClick={(event) => handleChoice(event.target.value)}
             >
               <ButtonTextDiv>
-                <ButtonTitle font="26px">Hänga gubben</ButtonTitle>
+                <ButtonTitle $font="26px">Hänga gubben</ButtonTitle>
                 <ButtonSign>
-                  <Hangman />
+                  <HangmanIcon />
                 </ButtonSign>
               </ButtonTextDiv>
               <ProgressDiv>
-                <p>Nivå {swedishGame[0].level}</p>
+                <p>Nivå {swedishGame[1].level}</p>
                 <p>
-                  {swedishGame[0].score}/{swedishGame[0].levelScore}
+                  {swedishGame[1].score}/{swedishGame[1].levelScore}
                 </p>
               </ProgressDiv>
             </GameTypeButton>
@@ -263,7 +268,7 @@ const ButtonTitle = styled.p`
   font-size: 20px;
   @media (min-width: 700px) {
     font-size: 30px;
-    font-size: ${props => props.font};
+    font-size: ${(props) => props.$font};
   }
 `
 
@@ -277,6 +282,6 @@ const ButtonSign = styled.p`
     font-size: 50px;
   }
 `
-const Hangman = styled(ImAngry)`
+const HangmanIcon = styled(ImAngry)`
   font-size: 35px;
 `

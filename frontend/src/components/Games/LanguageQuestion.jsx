@@ -1,10 +1,15 @@
-import PropTypes from "prop-types"
-import styled from "styled-components"
+//External imports for handling basic functionality
 import { useState, useEffect } from "react"
-import { useScore } from "../../contexts/ScoreContext"
+import PropTypes from "prop-types"
+
+//For handling UI
+import styled from "styled-components"
 import Lottie from "lottie-react"
 import Right from "../../assets/Right.json"
 import Wrong from "../../assets/Wrong.json"
+
+//Internal imports
+import { useLanguage } from "../../contexts/LanguageContext"
 
 export const LanguageQuestion = ({ type, language, color, subcategory }) => {
   const {
@@ -20,12 +25,12 @@ export const LanguageQuestion = ({ type, language, color, subcategory }) => {
     setDisableButton,
     generateQuestion,
     rightAnswer,
-  } = useScore()
+  } = useLanguage()
 
   const game = language === "swedish" ? swedishGame : englishGame
   const setGame = language === "swedish" ? setSwedishGame : setEnglishGame
   const currentScore = game[Number(type)].score
-  const { registerAnswer } = useScore()
+  const { registerAnswer } = useLanguage()
 
   //Animations to display right/wrong answer and level-change
   const [rightLottie, setRightLottie] = useState(false)
@@ -33,7 +38,7 @@ export const LanguageQuestion = ({ type, language, color, subcategory }) => {
 
   //Start by generating a question
   useEffect(() => {
-    generateQuestion(language)
+    generateQuestion(language, Number(type))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -65,7 +70,7 @@ export const LanguageQuestion = ({ type, language, color, subcategory }) => {
       setTimeout(() => setWrongLottie(false), 4600)
     }
     setDisableButton(true)
-    setTimeout(() => generateQuestion(language), 4500)
+    setTimeout(() => generateQuestion(language, Number(type)), 4500)
   }
 
   if (game[Number(type)].level < 4) {

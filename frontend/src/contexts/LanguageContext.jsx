@@ -4,9 +4,9 @@ import { createContext, useContext, useState } from "react"
 import englishData from "../data/EnglishGameData.json"
 import swedishData from "../data/SwedishGameData.json"
 
-const ScoreContext = createContext()
+const LanguageContext = createContext()
 
-export const ScoreProvider = ({ children }) => {
+export const LanguageProvider = ({ children }) => {
   //Variables for handling connection to backend
   const accessToken = localStorage.getItem("accessToken")
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000"
@@ -19,6 +19,14 @@ export const ScoreProvider = ({ children }) => {
       level: 1,
       score: 0,
       levelScore: 20,
+      dataset: swedishData.synonyms,
+    },
+    {
+      title: "Hänga gubben",
+      level: 1,
+      score: 0,
+      levelScore: 20,
+      dataset: swedishData.hangman,
     },
   ])
   //Object for english-game
@@ -28,12 +36,9 @@ export const ScoreProvider = ({ children }) => {
       level: 1,
       score: 0,
       levelScore: 20,
+      dataset: englishData.english,
     },
   ])
-
-  //Gets data from right json-file
-  const { english } = englishData
-  const { swedish } = swedishData
 
   const [question, setQuestion] = useState("")
   const [rightAnswer, setRightAnswer] = useState("")
@@ -60,45 +65,49 @@ export const ScoreProvider = ({ children }) => {
 
   //Puts corract and wrong answers in same array and sets them as options
   const generateAnswers = (index, list) => {
-    const newAnswers = [...list[index].wrongAnswer, list[index].rightAnswer]
-    setQuestion(list[index].question)
+    if (list[index].question) {
+      setQuestion(list[index].question)
+    }
+    if (list[index].wrongAnswer) {
+      const newAnswers = [...list[index].wrongAnswer, list[index].rightAnswer]
+      shuffleArray(newAnswers)
+      setAnswers(newAnswers)
+    }
     setRightAnswer(list[index].rightAnswer)
-    shuffleArray(newAnswers)
-    setAnswers(newAnswers)
   }
 
   //Sets the basics before generating a question
-  const generateQuestion = (language) => {
+  const generateQuestion = (subject, gameNumber) => {
     let game = ""
     let list = []
     let setGame = null
 
-    //Sets which datasets to use depending on language
-    if (language === "english") {
+    //Sets which datasets to use depending on subject
+    if (subject === "english") {
       game = englishGame
-      list = english
+      list = englishGame[gameNumber].dataset
       setGame = setEnglishGame
     }
-    if (language === "swedish") {
+    if (subject === "swedish") {
       game = swedishGame
-      list = swedish
+      list = swedishGame[gameNumber].dataset
       setGame = setSwedishGame
     }
 
     //Checks the score and handles level-change
     //use next line for testing/demoing (only three questions before level-change)
     //if (game[0].score >= 3) {
-    if (game[0].score >= game[0].levelScore) {
+    if (game[gameNumber].score >= game[gameNumber].levelScore) {
       setCelebrateLottie(true)
       const newGame = [...game]
-      newGame[0].level = game[0].level + 1
-      newGame[0].score = 0
+      newGame[gameNumber].level = game[gameNumber].level + 1
+      newGame[gameNumber].score = 0
       setGame(newGame)
       setTimeout(() => setCelebrateLottie(false), 3000)
     }
 
     //Filters the dataset depending on level
-    const newList = list.filter((question) => question.level === game[0].level)
+    const newList = list.filter((question) => question.level === game[gameNumber].level)
     const newRandomNumber = Math.floor(Math.random() * newList.length)
     generateAnswers(newRandomNumber, newList)
     setDisableButton(false)
@@ -218,7 +227,7 @@ export const ScoreProvider = ({ children }) => {
   }
 
   return (
-    <ScoreContext.Provider
+    <LanguageContext.Provider
       value={{
         swedishGame,
         setSwedishGame,
@@ -240,12 +249,12 @@ export const ScoreProvider = ({ children }) => {
       }}
     >
       {children}
-    </ScoreContext.Provider>
+    </LanguageContext.Provider>
   )
 }
 
-export const useScore = () => useContext(ScoreContext)
+export const useLanguage = () => useContext(LanguageContext)
 
-ScoreProvider.propTypes = {
+LanguageProvider.propTypes = {
   children: PropTypes.any,
 }

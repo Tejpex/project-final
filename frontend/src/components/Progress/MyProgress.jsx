@@ -1,12 +1,12 @@
 import styled, { css } from "styled-components"
 import { useState } from "react"
-import { useScore } from "../../contexts/ScoreContext"
+import { useLanguage } from "../../contexts/LanguageContext"
 import { LevelProgressBar } from "./LevelProgressBar"
 import { LoadingAnimation } from "../LoadingAnimation"
 import { Hero } from "./Hero"
 
 export const Progress = () => {
-  const { progress, fetchProgress, loading } = useScore()
+  const { progress, fetchProgress, loading } = useLanguage()
   const [selectedSubject, setSelectedSubject] = useState(null)
 
   if (!progress) {

@@ -4,13 +4,13 @@ import { PiTranslate } from "react-icons/pi"
 import Lottie from "lottie-react"
 import { Link } from "react-router-dom"
 import { useState } from "react"
-import { useScore } from "../../contexts/ScoreContext.jsx"
+import { useLanguage } from "../../contexts/LanguageContext.jsx"
 import { LanguageQuestion } from "./LanguageQuestion.jsx"
 import { Footer } from "../Footer"
 import Celebrate from "../../assets/Celebrate.json"
 
 export const English = () => {
-  const { englishGame, celebrateLottie } = useScore()
+  const { englishGame, celebrateLottie } = useLanguage()
   
   const [gameTypeNumber, setGameTypeNumber] = useState()
 
