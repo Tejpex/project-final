@@ -23,14 +23,18 @@ import gubbe11 from "../../assets/hangman/gubbe11.svg"
 import { useLanguage } from "../../contexts/LanguageContext"
 
 export const Hangman = ({ focusRef, type }) => {
-  const { swedishGame, setSwedishGame, rightAnswer, generateQuestion, registerAnswer } =
-    useLanguage()
+  // Loads words, keeps track of score and handles connections to backend
+  const {
+    swedishGame,
+    setSwedishGame,
+    generateQuestion,
+    rightAnswer,
+    registerAnswer,
+  } = useLanguage()
   const currentScore = swedishGame[Number(type)].score
+  //const subcategory = mathGame[Number(type)].subcategory
 
-  const [message, setMessage] = useState("")
-  const [lives, setLives] = useState(10)
-  const pictures = [gubbe11, gubbe10, gubbe9, gubbe8, gubbe7, gubbe6, gubbe5, gubbe4, gubbe3, gubbe2, gubbe1]
-  const [question, setQuestion] = useState("")
+  //Handles keypad
   const [answerInput, setAnswerInput] = useState("")
   const numPadNumbers = [
     "a",
@@ -63,31 +67,92 @@ export const Hangman = ({ focusRef, type }) => {
     "ä",
     "ö",
   ]
+
+  //Handles animations and messages when word is done or lost
+  const [message, setMessage] = useState("")
   const [rightLottie, setRightLottie] = useState(false)
   const [wrongLottie, setWrongLottie] = useState(false)
-  //const subcategory = mathGame[Number(type)].subcategory
 
+  //Handles guesses and lives during game
+  const [lives, setLives] = useState(10)
+  const pictures = [
+    gubbe11,
+    gubbe10,
+    gubbe9,
+    gubbe8,
+    gubbe7,
+    gubbe6,
+    gubbe5,
+    gubbe4,
+    gubbe3,
+    gubbe2,
+    gubbe1,
+  ]
+  const [display, setDisplay] = useState("") //What is showing on screen
+  const [displayAsArray, setDisplayAsArray] = useState([])
+  const guesses = []
+
+  //Start by making a line for each letter of right answer
   const makeLines = () => {
     let line = ""
     for (let x of rightAnswer) {
       line += "_ "
     }
-    setQuestion(line)
+    //Show the lines
+    setDisplay(line)
+    //Save lines in array to use later
+    setDisplayAsArray (line.split(" "))
   }
 
+  //When question is found make lines for it
+  useEffect(() => {
+    makeLines()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rightAnswer])
+
+  //Load page by setting question
   useEffect(() => {
     generateQuestion("swedish", Number(type))
-    makeLines()
     if (focusRef.current) {
       focusRef.current.focus()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  //If guess is right, show those letters on screen
+  const showLetters = (guess) => {
+    let index = 0
+    while (index < displayAsArray.length) {
+      if (guess === rightAnswer.charAt(index)) {
+        displayAsArray[index] = guess
+      }
+      index++
+    }
+    const newDisplay = displayAsArray.join(" ")
+    setDisplay(newDisplay)
+  }
+
+  //Check user guess to see if it's incuded in right answer
+  const checkGuess = async (event) => {
+    event.preventDefault()
+    const guess = answerInput.toLowerCase()
+    if (rightAnswer.includes(guess)) {
+      showLetters(guess)
+    } else {
+      setLives(lives - 1)
+      guesses.push(guess)
+      console.log(guesses)
+    }
+    //checkAnswer()
+    setAnswerInput("")
+    if (focusRef.current) {
+      focusRef.current.focus()
+    }
+  }
+
   //Checks if input matches correctAnswer and gives the user a message of "right/wrong"
   //Then starts a new question
-  const checkAnswer = async (event) => {
-    event.preventDefault()
+  const checkAnswer = async () => {
     if (answerInput == rightAnswer) {
       setTimeout(() => setRightLottie(true), 500)
       setTimeout(() => setRightLottie(false), 4600)
@@ -97,25 +162,21 @@ export const Hangman = ({ focusRef, type }) => {
       setTimeout(() => setSwedishGame(newGame), 3000)
 
       // Send answer to backend
-  //    setTimeout(async () => {
-  //      try {
-  //        await registerAnswer({
-  //          subject: "math",
-  //          level: newGame[type].level,
-  //          subcategory: subcategory,
-  //         score: currentScore + 1,
-  //        })
-  //      } catch (err) {
-  //        console.error("Error registration answer", err)
-  //      }
-  //    }, 3000)
+      //    setTimeout(async () => {
+      //      try {
+      //        await registerAnswer({
+      //          subject: "math",
+      //          level: newGame[type].level,
+      //          subcategory: subcategory,
+      //         score: currentScore + 1,
+      //        })
+      //      } catch (err) {
+      //        console.error("Error registration answer", err)
+      //      }
+      //    }, 3000)
     } else {
       setTimeout(() => setWrongLottie(true), 500)
-      setTimeout(
-        () =>
-          setMessage(`Rätt svar var ${rightAnswer}.`),
-        2500
-      )
+      setTimeout(() => setMessage(`Rätt svar var ${rightAnswer}.`), 2500)
       setTimeout(() => setWrongLottie(false), 4600)
     }
     setTimeout(() => newQuestion(), 4500)
@@ -129,15 +190,6 @@ export const Hangman = ({ focusRef, type }) => {
     makeLines()
     if (focusRef.current) {
       focusRef.current.focus()
-    }
-  }
-
-  const checkGuess = async (event) => {
-    event.preventDefault()
-    if ( rightAnswer.includes(answerInput) ) {
-      setQuestion("Yey")
-    } else {
-      setQuestion("No")
     }
   }
 
@@ -157,16 +209,20 @@ export const Hangman = ({ focusRef, type }) => {
   }
 
   if (swedishGame[Number(type)].level < 4) {
-    return (    
+    return (
       <div>
-        <QuestionCard>{question}</QuestionCard>
-        <Drawing src={pictures[lives]} alt="hangman drawing showing how many lives are left" />
+        <QuestionCard>{display}</QuestionCard>
         <Answer onSubmit={(event) => checkGuess(event)}>
+          <Drawing
+            src={pictures[lives]}
+            alt="hangman drawing showing how many lives are left"
+          />
           <AnswerInput
             ref={focusRef}
             value={answerInput}
             onChange={(event) => setAnswerInput(event.target.value)}
           />
+          <WrongGuesses>{guesses}</WrongGuesses>
           <AnswerBtn type="submit">GISSA</AnswerBtn>
           {rightLottie && (
             <FeedbackLottie>
@@ -189,19 +245,12 @@ export const Hangman = ({ focusRef, type }) => {
               {number}
             </NumPadBtn>
           ))}
-          <NumPadBtn
-            key="0"
-            className="big"
-            onClick={() => handleNumPadClick(0)}
-          >
-            0
-          </NumPadBtn>
           <NumPadBtn className="delete" onClick={handleDeleteClick}>
             🗑️
           </NumPadBtn>
         </NumPad>
         {message && <Message>{message}</Message>}
-      </div>      
+      </div>
     )
   } else {
     return <Title>Du har klarat alla nivåer! Grattis!</Title>
@@ -210,7 +259,7 @@ export const Hangman = ({ focusRef, type }) => {
 
 const Title = styled.h1`
   margin: 0;
-  font-size: 40px; //
+  font-size: 40px;
 
   @media (min-width: 700px) {
     font-size: 45px;
@@ -233,13 +282,18 @@ const QuestionCard = styled.div`
 
   @media (min-width: 700px) {
     width: 600px;
-    height: 150px;
+    height: 100px;
     font-size: 50px;
   }
 `
 
 const Drawing = styled.img`
-  height: 300px
+  height: 200px;
+`
+
+const WrongGuesses = styled.p`
+  margin: 0;
+  font-size: 12px;
 `
 
 const Answer = styled.form`
@@ -312,10 +366,10 @@ const AnswerBtn = styled.button`
 
 const NumPad = styled.div`
   display: grid;
-  grid-template-rows: 4;
-  grid-template-columns: 3;
+  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(10, 1fr);
   gap: 10px;
-  max-width: 270px;
+  max-width: 700px;
   margin: 10px auto;
 `
 
@@ -325,23 +379,15 @@ const NumPadBtn = styled.button`
     css`
       grid-column: span 1;
       grid-row: span 1;
-      width: 80px;
-    `}
-
-  ${(props) =>
-    props.className === "big" &&
-    css`
-      grid-column: span 2;
-      grid-row: 4;
-      width: 175px;
+      width: 60px;
     `}
 
   ${(props) =>
     props.className === "delete" &&
     css`
-      grid-column: 3;
-      grid-row: 4;
-      width: 80px;
+      grid-column: 10;
+      grid-row: 3;
+      width: 60px;
     `}
 
   border-radius: 10px;
@@ -387,18 +433,14 @@ Hangman.propTypes = {
   type: PropTypes.string,
 }
 
-/*print(hangman_art.logo)
-
-#What should be shown to user
-display = []
+/*
 
 #Keep track of guessed letters
 guesses = []
 
 #Loop through guesses and check them
 while not end_of_game:
-    guess = input("Guess a letter: ").lower()
-    clear()
+    
   
     #Check if guess has been made before
     if guess in guesses:
@@ -418,9 +460,6 @@ while not end_of_game:
       else:
         print("Good guess")
         
-    print(' '.join(display))
-    print(stages[lives])
-    print(' '.join(guesses))
 
     #Check for end of game
     if lives == 0:
