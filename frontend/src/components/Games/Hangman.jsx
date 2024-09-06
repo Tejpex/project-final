@@ -238,7 +238,11 @@ const QuestionCard = styled.div`
 `
 
 const Drawing = styled.img`
-  height: 200px;
+  height: 100px;
+
+  @media (min-width: 700px) {
+    height: 200px;
+  }
 `
 
 const WrongGuesses = styled.p`
@@ -264,7 +268,7 @@ const AnswerInput = styled.input`
   color: #000000;
   background-color: var(--sunsethover);
   border-radius: 10px;
-  width: 200px;
+  width: 50px;
   height: 40px;
   border: none;
   padding: 20px;

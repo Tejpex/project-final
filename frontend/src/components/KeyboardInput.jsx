@@ -1,8 +1,8 @@
 import PropTypes from "prop-types"
-import styled, { css } from "styled-components"
+import styled from "styled-components"
 
 export const KeyboardInput = ({ setAnswerInput, focusRef }) => {
-  const numPadNumbers = [
+  const KeyboardKeys = [
     "a",
     "b",
     "c",
@@ -50,58 +50,53 @@ export const KeyboardInput = ({ setAnswerInput, focusRef }) => {
   }
 
   return (
-    <NumPad>
-      {numPadNumbers.map((number) => (
-        <NumPadBtn
-          key={number}
-          className="small"
-          onClick={() => handleKeyboardClick(number)}
+    <Keyboard>
+      {KeyboardKeys.map((key) => (
+        <KeyboardBtn
+          key={key}
+          onClick={() => handleKeyboardClick(key)}
         >
-          {number}
-        </NumPadBtn>
+          {key}
+        </KeyboardBtn>
       ))}
-      <NumPadBtn className="delete" onClick={handleDeleteClick}>
+      <KeyboardBtn onClick={handleDeleteClick}>
         🗑️
-      </NumPadBtn>
-    </NumPad>
+      </KeyboardBtn>
+    </Keyboard>
   )
 }
 
-const NumPad = styled.div`
+const Keyboard = styled.div`
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
-  max-width: 700px;
+  max-width: 300px;
   margin: 10px auto;
+
+  @media (min-width: 700px) {
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(10, 1fr);
+    max-width: 680px;
+  }
 `
 
-const NumPadBtn = styled.button`
-  ${(props) =>
-    props.className === "small" &&
-    css`
-      grid-column: span 1;
-      grid-row: span 1;
-      width: 60px;
-    `}
-
-  ${(props) =>
-    props.className === "delete" &&
-    css`
-      grid-column: 10;
-      grid-row: 3;
-      width: 60px;
-    `}
-
+const KeyboardBtn = styled.button`
+  width: 50px;
   border-radius: 10px;
   border: none;
   background-color: var(--sunset);
   color: white;
   text-shadow: 1px 1px 2px black;
-  padding: 10px 20px;
+  padding: 10px;
   font-size: 18px;
   cursor: pointer;
-  box-shadow: 3px 3px var(--sunsetshadow); //
+  box-shadow: 3px 3px var(--sunsetshadow);
+
+  @media (min-width: 700px) {
+    width: 60px;
+    padding: 10px 20px;
+  }
 
   &:hover {
     background-color: var(--sunsethover);
