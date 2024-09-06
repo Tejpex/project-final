@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 
 //For handling UI
-import styled, { css } from "styled-components"
+import styled from "styled-components"
 import Lottie from "lottie-react"
 import Right from "../../assets/Right.json"
 import Wrong from "../../assets/Wrong.json"
@@ -21,6 +21,7 @@ import gubbe11 from "../../assets/hangman/gubbe11.svg"
 
 //Internal imports
 import { useLanguage } from "../../contexts/LanguageContext"
+import { KeyboardInput } from "../KeyboardInput"
 
 export const Hangman = ({ focusRef, type }) => {
   // Loads words, keeps track of score and handles connections to backend
@@ -36,37 +37,6 @@ export const Hangman = ({ focusRef, type }) => {
 
   //Handles keypad
   const [answerInput, setAnswerInput] = useState("")
-  const numPadNumbers = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z",
-    "å",
-    "ä",
-    "ö",
-  ]
 
   //Handles animations and messages when word is done or lost
   const [message, setMessage] = useState("")
@@ -197,21 +167,6 @@ export const Hangman = ({ focusRef, type }) => {
     }
   }
 
-  //Puts users click on number-buttons into the inputfield
-  const handleNumPadClick = (number) => {
-    setAnswerInput((prev) => prev + number.toString())
-    if (focusRef.current) {
-      focusRef.current.focus()
-    }
-  }
-
-  const handleDeleteClick = () => {
-    setAnswerInput("")
-    if (focusRef.current) {
-      focusRef.current.focus()
-    }
-  }
-
   if (swedishGame[Number(type)].level < 4) {
     return (
       <div>
@@ -243,20 +198,7 @@ export const Hangman = ({ focusRef, type }) => {
             </FeedbackLottie>
           )}
         </Answer>
-        <NumPad>
-          {numPadNumbers.map((number) => (
-            <NumPadBtn
-              key={number}
-              className="small"
-              onClick={() => handleNumPadClick(number)}
-            >
-              {number}
-            </NumPadBtn>
-          ))}
-          <NumPadBtn className="delete" onClick={handleDeleteClick}>
-            🗑️
-          </NumPadBtn>
-        </NumPad>
+        <KeyboardInput setAnswerInput={setAnswerInput} focusRef={focusRef} />
         {message && <Message>{message}</Message>}
       </div>
     )
@@ -369,49 +311,6 @@ const AnswerBtn = styled.button`
     background-color: var(--sunsethover);
     background-color: var(--sunsethover);
     box-shadow: 6px 6px var(--sunsetshadow);
-    transition: 0.2s ease;
-  }
-`
-
-const NumPad = styled.div`
-  display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  grid-template-columns: repeat(10, 1fr);
-  gap: 10px;
-  max-width: 700px;
-  margin: 10px auto;
-`
-
-const NumPadBtn = styled.button`
-  ${(props) =>
-    props.className === "small" &&
-    css`
-      grid-column: span 1;
-      grid-row: span 1;
-      width: 60px;
-    `}
-
-  ${(props) =>
-    props.className === "delete" &&
-    css`
-      grid-column: 10;
-      grid-row: 3;
-      width: 60px;
-    `}
-
-  border-radius: 10px;
-  border: none;
-  background-color: var(--sunset);
-  color: white;
-  text-shadow: 1px 1px 2px black;
-  padding: 10px 20px;
-  font-size: 18px;
-  cursor: pointer;
-  box-shadow: 3px 3px var(--sunsetshadow); //
-
-  &:hover {
-    background-color: var(--sunsethover);
-    box-shadow: 4px 4px var(--sunsetshadow);
     transition: 0.2s ease;
   }
 `
