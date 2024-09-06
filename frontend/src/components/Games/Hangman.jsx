@@ -90,9 +90,24 @@ export const Hangman = ({ focusRef, type }) => {
   ]
   const [display, setDisplay] = useState("") //What is showing on screen
   const [displayAsArray, setDisplayAsArray] = useState([])
-  const guesses = []
+  const [guesses, setGuesses] = useState([])
+  
+  //Load page by setting a right word
+  useEffect(() => {
+    generateQuestion("swedish", Number(type))
+    if (focusRef.current) {
+      focusRef.current.focus()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  //Start by making a line for each letter of right answer
+  //When a right word is found make lines for it
+  useEffect(() => {
+    makeLines()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rightAnswer])
+
+  //Go through each letter of right answer and make a line to display
   const makeLines = () => {
     let line = ""
     for (let x of rightAnswer) {
@@ -104,20 +119,23 @@ export const Hangman = ({ focusRef, type }) => {
     setDisplayAsArray (line.split(" "))
   }
 
-  //When question is found make lines for it
-  useEffect(() => {
-    makeLines()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rightAnswer])
-
-  //Load page by setting question
-  useEffect(() => {
-    generateQuestion("swedish", Number(type))
+  //Check user guess to see if it's incuded in right answer
+  const checkGuess = async (event) => {
+    event.preventDefault()
+    const guess = answerInput.toLowerCase()
+    if (rightAnswer.includes(guess)) {
+      showLetters(guess)
+    } else {
+      setLives(lives - 1)
+      const newGuessesArray = [...guesses, guess]
+      setGuesses(newGuessesArray)
+    }
+    checkAnswer()
+    setAnswerInput("")
     if (focusRef.current) {
       focusRef.current.focus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }
 
   //If guess is right, show those letters on screen
   const showLetters = (guess) => {
@@ -131,35 +149,19 @@ export const Hangman = ({ focusRef, type }) => {
     const newDisplay = displayAsArray.join(" ")
     setDisplay(newDisplay)
   }
-
-  //Check user guess to see if it's incuded in right answer
-  const checkGuess = async (event) => {
-    event.preventDefault()
-    const guess = answerInput.toLowerCase()
-    if (rightAnswer.includes(guess)) {
-      showLetters(guess)
-    } else {
-      setLives(lives - 1)
-      guesses.push(guess)
-      console.log(guesses)
-    }
-    //checkAnswer()
-    setAnswerInput("")
-    if (focusRef.current) {
-      focusRef.current.focus()
-    }
-  }
-
-  //Checks if input matches correctAnswer and gives the user a message of "right/wrong"
-  //Then starts a new question
+  
+  //Check if word is complete or if lives are out and give the user feedback
+  //Then start a new question
   const checkAnswer = async () => {
-    if (answerInput == rightAnswer) {
+    const usersWord = displayAsArray.join("")
+    if (usersWord == rightAnswer) {
       setTimeout(() => setRightLottie(true), 500)
       setTimeout(() => setRightLottie(false), 4600)
 
       const newGame = [...swedishGame]
       setTimeout(() => (newGame[Number(type)].score = currentScore + 1), 3000)
       setTimeout(() => setSwedishGame(newGame), 3000)
+      setTimeout(() => newQuestion(), 4500)
 
       // Send answer to backend
       //    setTimeout(async () => {
@@ -174,20 +176,22 @@ export const Hangman = ({ focusRef, type }) => {
       //        console.error("Error registration answer", err)
       //      }
       //    }, 3000)
-    } else {
-      setTimeout(() => setWrongLottie(true), 500)
+    } else if (lives === 1) {
+      setTimeout(() => setWrongLottie(true), 1500)
       setTimeout(() => setMessage(`Rätt svar var ${rightAnswer}.`), 2500)
       setTimeout(() => setWrongLottie(false), 4600)
+      setTimeout(() => newQuestion(), 4500)
     }
-    setTimeout(() => newQuestion(), 4500)
   }
 
-  //Resets message and input-field before generating new question
+  //Reset message and input-field before generating new question
   const newQuestion = () => {
     setMessage("")
     setAnswerInput("")
     generateQuestion("swedish", Number(type))
     makeLines()
+    setLives(10)
+    setGuesses([])
     if (focusRef.current) {
       focusRef.current.focus()
     }
@@ -217,13 +221,17 @@ export const Hangman = ({ focusRef, type }) => {
             src={pictures[lives]}
             alt="hangman drawing showing how many lives are left"
           />
-          <AnswerInput
-            ref={focusRef}
-            value={answerInput}
-            onChange={(event) => setAnswerInput(event.target.value)}
-          />
-          <WrongGuesses>{guesses}</WrongGuesses>
-          <AnswerBtn type="submit">GISSA</AnswerBtn>
+          <ExtraDiv>
+            <InputField>
+              <AnswerInput
+                ref={focusRef}
+                value={answerInput}
+                onChange={(event) => setAnswerInput(event.target.value)}
+              />
+              <AnswerBtn type="submit">GISSA</AnswerBtn>
+            </InputField>
+            <WrongGuesses>{guesses.join(" ")}</WrongGuesses>
+          </ExtraDiv>
           {rightLottie && (
             <FeedbackLottie>
               <Lottie animationData={Right} loop={false} />
@@ -293,7 +301,8 @@ const Drawing = styled.img`
 
 const WrongGuesses = styled.p`
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
+  height: 20px;
 `
 
 const Answer = styled.form`
@@ -428,46 +437,34 @@ const FeedbackLottie = styled.div`
   }
 `
 
+const InputField = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  position: relative;
+
+  @media (min-width: 700px) {
+    gap: 20px;
+  }
+`
+
+const ExtraDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+
 Hangman.propTypes = {
   focusRef: PropTypes.any,
   type: PropTypes.string,
 }
 
 /*
-
-#Keep track of guessed letters
-guesses = []
-
-#Loop through guesses and check them
-while not end_of_game:
-    
-  
     #Check if guess has been made before
     if guess in guesses:
       print(f"You have already guessed {guess}")
     else:
       #Check if guessed letter is found in word
-      for position in range(word_length):
-          letter = chosen_word[position]
-          if letter == guess:
-              display[position] = letter
-            
-      #Check if guess is wrong
-      if guess not in chosen_word:
-        guesses += guess
-        print(f"Sorry, {guess} is not found in the word.")
-        lives -= 1
-      else:
-        print("Good guess")
-        
-
-    #Check for end of game
-    if lives == 0:
-      end_of_game = True
-      print("You lose.")
-      print(f"Correct answer was {chosen_word}")
-    if "_" not in display:
-      end_of_game = True
-      print("You win.")
 
        */
