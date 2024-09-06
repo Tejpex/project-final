@@ -35,10 +35,11 @@ export const Hangman = ({ focusRef, type }) => {
   const currentScore = swedishGame[Number(type)].score
   //const subcategory = mathGame[Number(type)].subcategory
 
-  //Handles keypad
+  //Handles input from user
   const [answerInput, setAnswerInput] = useState("")
+  const disableSubmit = answerInput.length < 1 || answerInput.length > 1
 
-  //Handles animations and messages when word is done or lost
+  //Handles animations and messages when word is done or game is lost
   const [message, setMessage] = useState("")
   const [rightLottie, setRightLottie] = useState(false)
   const [wrongLottie, setWrongLottie] = useState(false)
@@ -183,7 +184,7 @@ export const Hangman = ({ focusRef, type }) => {
                 value={answerInput}
                 onChange={(event) => setAnswerInput(event.target.value)}
               />
-              <AnswerBtn type="submit">GISSA</AnswerBtn>
+              <AnswerBtn type="submit" disabled={disableSubmit}>GISSA</AnswerBtn>
             </InputField>
             <WrongGuesses>{guesses.join(" ")}</WrongGuesses>
           </ExtraDiv>
