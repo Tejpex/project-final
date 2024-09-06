@@ -1,5 +1,5 @@
 {
-  "swedish": [
+  "synonyms": [
     {
       "level": 1,
       "question": "Arbeta",
@@ -531,6 +531,118 @@
       "rightAnswer": "sova",
       "wrongAnswer": ["vakna", "klättra", "leka"],
       "category": "verb"
+    }
+  ],
+  "hangman": [
+    {
+      "level": 2,
+      "rightAnswer": "anteckna",
+      "category": "verb"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "basket",
+      "category": "sport"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "bok",
+      "category": "saker"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "bord",
+      "category": "saker"
+    },
+    {
+      "level": 2,
+      "rightAnswer": "choklad",
+      "category": "mat"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "elefant",
+      "category": "djur"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "elektriker",
+      "category": "yrke"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "fotboll",
+      "category": "sport"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "fotograf",
+      "category": "yrke"
+    },
+    {
+      "level": 2,
+      "rightAnswer": "flodhäst",
+      "category": "djur"
+    },
+    {
+      "level": 2,
+      "rightAnswer": "giraff",
+      "category": "djur"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "gymnastik",
+      "category": "sport"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "kameleont",
+      "category": "djur"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "krokodil",
+      "category": "djur"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "måla",
+      "category": "verb"
+    },
+    {
+      "level": 2,
+      "rightAnswer": "paraply",
+      "category": "saker"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "projektor",
+      "category": "saker"
+    },
+    {
+      "level": 2,
+      "rightAnswer": "skriva",
+      "category": "verb"
+    },
+    {
+      "level": 3,
+      "rightAnswer": "tvättmaskin",
+      "category": "saker"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "tennis",
+      "category": "sport"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "tåg",
+      "category": "transport"
+    },
+    {
+      "level": 1,
+      "rightAnswer": "äpple",
+      "category": "mat"
     }
   ]
 }

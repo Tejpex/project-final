@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { FaBars, FaTimes } from "react-icons/fa"
 import { FiLogOut } from "react-icons/fi"
 import { useUser } from "../contexts/UserContext"
-import { useScore } from "../contexts/ScoreContext"
+import { useLanguage } from "../contexts/LanguageContext"
 import { useMath } from "../contexts/MathContext"
 import { SlideInPanel } from "./SlideInPanel"
 import { RegistrationForm } from "./RegistrationForm"
@@ -20,7 +20,7 @@ export const Header = () => {
     isPanelOpen,
     setIsPanelOpen,
   } = useUser()
-  const { fetchProgress } = useScore()
+  const { fetchProgress } = useLanguage()
   const { fetchMathProgress } = useMath()
   const [hamburgerOpen, setHamburgerOpen] = useState(false)
 

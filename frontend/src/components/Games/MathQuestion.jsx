@@ -5,11 +5,11 @@ import { useMath } from "../../contexts/MathContext"
 import Lottie from "lottie-react"
 import Right from "../../assets/Right.json"
 import Wrong from "../../assets/Wrong.json"
-import { useScore } from "../../contexts/ScoreContext"
+import { useLanguage } from "../../contexts/LanguageContext"
 
 export const MathQuestion = ({ focusRef, type }) => {
   const { mathGame, setMathGame, generateQuestion } = useMath()
-  const { registerAnswer } = useScore()
+  const { registerAnswer } = useLanguage()
   const currentScore = mathGame[Number(type)].score
 
   const [message, setMessage] = useState("")

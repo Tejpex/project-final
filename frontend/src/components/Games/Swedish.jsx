@@ -1,6 +1,5 @@
 //External imports for handling basic functionality
-//ADD UseRef TO HANDLE FOCUS-SHIFT
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Link } from "react-router-dom"
 
 //For handling UI
@@ -9,18 +8,22 @@ import Lottie from "lottie-react"
 import Celebrate from "../../assets/Celebrate.json" /*New-level-animation*/
 import { IoArrowBackCircleOutline } from "react-icons/io5" /*Go-back-icon*/
 import { LiaReadme } from "react-icons/lia" /*Synonyms-icon*/
+import { ImAngry } from "react-icons/im" /*Hangman-icon*/
 
 //Internal imports
-import { useScore } from "../../contexts/ScoreContext.jsx"
+import { useLanguage } from "../../contexts/LanguageContext.jsx"
 import { LanguageQuestion } from "./LanguageQuestion.jsx"
+import { Hangman } from "./Hangman.jsx"
 import { Footer } from "../Footer"
+import { GameTypeButton } from "../Cards.jsx"
 
 export const Swedish = () => {
-  const { swedishGame, celebrateLottie } = useScore()
+  const { swedishGame, celebrateLottie } = useLanguage()
   const [gameTypeNumber, setGameTypeNumber] = useState()
+  const focusRef = useRef(null)
 
-  const handleChoice = (type) => {
-    setGameTypeNumber(type)
+  const handleChoice = (gameNumber) => {
+    setGameTypeNumber(gameNumber)
   }
 
   if (gameTypeNumber) {
@@ -58,13 +61,17 @@ export const Swedish = () => {
             </Score>
           </Progress>
         </HeaderDiv>
-
-        <LanguageQuestion
-          type={gameTypeNumber}
-          language="swedish"
-          color="sunset"
-          subcategory="synonyms"
-        />
+        {gameTypeNumber == 0 && (
+          <LanguageQuestion
+            type={gameTypeNumber}
+            language="swedish"
+            color="sunset"
+            subcategory="synonyms"
+          />
+        )}
+        {gameTypeNumber == 1 && (
+          <Hangman focusRef={focusRef} type={gameTypeNumber} />
+        )}
       </SwedishGameSite>
     )
   } else {
@@ -83,6 +90,7 @@ export const Swedish = () => {
           </HeaderDiv>
           <Choices>
             <GameTypeButton
+              color="sunset"
               value="0"
               onClick={(event) => handleChoice(event.target.value)}
             >
@@ -96,6 +104,24 @@ export const Swedish = () => {
                 <p>Nivå {swedishGame[0].level}</p>
                 <p>
                   {swedishGame[0].score}/{swedishGame[0].levelScore}
+                </p>
+              </ProgressDiv>
+            </GameTypeButton>
+            <GameTypeButton
+              color="sunset"
+              value="1"
+              onClick={(event) => handleChoice(event.target.value)}
+            >
+              <ButtonTextDiv>
+                <ButtonTitle $font="26px">Hänga gubben</ButtonTitle>
+                <ButtonSign>
+                  <HangmanIcon />
+                </ButtonSign>
+              </ButtonTextDiv>
+              <ProgressDiv>
+                <p>Nivå {swedishGame[1].level}</p>
+                <p>
+                  {swedishGame[1].score}/{swedishGame[1].levelScore}
                 </p>
               </ProgressDiv>
             </GameTypeButton>
@@ -209,47 +235,6 @@ const Choices = styled.div`
   }
 `
 
-const GameTypeButton = styled.button`
-  background-color: var(--sunset);
-  color: white;
-  text-shadow: 1px 1px 2px black;
-  font-size: 18px;
-  width: 270px;
-  height: 70px;
-  margin: 10px auto;
-  padding: 20px 0;
-  border-radius: 15px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 4px 4px var(--sunsetshadow);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  &:hover {
-    background-color: var(--sunsethover);
-    box-shadow: 6px 6px var(--sunsetshadow);
-    transition: 0.2s ease;
-  }
-
-  &:disabled {
-    cursor: default;
-    border: none;
-
-    &:hover {
-      background-color: var(--sunset);
-    }
-  }
-
-  @media (min-width: 700px) {
-    width: 270px;
-    height: 120px;
-    padding: 30px 20px;
-    gap: 20px;
-  }
-`
 const ProgressDiv = styled.div`
   display: flex;
   justify-content: space-between;
@@ -281,9 +266,9 @@ const ButtonTextDiv = styled.div`
 
 const ButtonTitle = styled.p`
   font-size: 20px;
-
   @media (min-width: 700px) {
     font-size: 30px;
+    font-size: ${(props) => props.$font};
   }
 `
 
@@ -296,4 +281,7 @@ const ButtonSign = styled.p`
   @media (min-width: 700px) {
     font-size: 50px;
   }
+`
+const HangmanIcon = styled(ImAngry)`
+  font-size: 35px;
 `
