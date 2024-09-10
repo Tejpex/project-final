@@ -173,6 +173,13 @@ export const LanguageProvider = ({ children }) => {
         data.progress.progress.swedish.synonyms.levels[1].score
       const scoreThreeSwedishSynonyms =
         data.progress.progress.swedish.synonyms.levels[2].score
+      
+      const scoreOneSwedishHangman =
+        data.progress.progress.swedish.hangman.levels[0].score
+      const scoreTwoSwedishHangman =
+        data.progress.progress.swedish.hangman.levels[1].score
+      const scoreThreeSwedishHangman =
+        data.progress.progress.swedish.hangman.levels[2].score
 
       const levelScore = 20
 
@@ -217,6 +224,28 @@ export const LanguageProvider = ({ children }) => {
         const newGame = [...swedishGame]
         newGame[0].level = 3
         newGame[0].score = levelScore
+        setSwedishGame(newGame)
+      }
+
+      if (scoreOneSwedishHangman < levelScore) {
+        const newGame = [...swedishGame]
+        newGame[1].level = 1
+        newGame[1].score = scoreOneSwedishHangman
+        setSwedishGame(newGame)
+      } else if (scoreTwoSwedishHangman < levelScore) {
+        const newGame = [...swedishGame]
+        newGame[1].level = 2
+        newGame[1].score = scoreTwoSwedishHangman
+        setSwedishGame(newGame)
+      } else if (scoreThreeSwedishHangman < levelScore) {
+        const newGame = [...swedishGame]
+        newGame[1].level = 3
+        newGame[1].score = scoreThreeSwedishHangman
+        setSwedishGame(newGame)
+      } else {
+        const newGame = [...swedishGame]
+        newGame[1].level = 3
+        newGame[1].score = levelScore
         setSwedishGame(newGame)
       }
 

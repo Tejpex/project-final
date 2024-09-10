@@ -70,7 +70,11 @@ export const Swedish = () => {
           />
         )}
         {gameTypeNumber == 1 && (
-          <Hangman focusRef={focusRef} type={gameTypeNumber} />
+          <Hangman
+            focusRef={focusRef}
+            type={gameTypeNumber}
+            subcategory="hangman"
+          />
         )}
       </SwedishGameSite>
     )

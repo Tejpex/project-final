@@ -23,7 +23,7 @@ import gubbe11 from "../../assets/hangman/gubbe11.svg"
 import { useLanguage } from "../../contexts/LanguageContext"
 import { KeyboardInput } from "../KeyboardInput"
 
-export const Hangman = ({ focusRef, type }) => {
+export const Hangman = ({ focusRef, type, subcategory }) => {
   // Loads words, keeps track of score and handles connections to backend
   const {
     swedishGame,
@@ -33,7 +33,6 @@ export const Hangman = ({ focusRef, type }) => {
     registerAnswer,
   } = useLanguage()
   const currentScore = swedishGame[Number(type)].score
-  //const subcategory = mathGame[Number(type)].subcategory
 
   //Handles input from user
   const [answerInput, setAnswerInput] = useState("")
@@ -135,18 +134,18 @@ export const Hangman = ({ focusRef, type }) => {
       setTimeout(() => newQuestion(), 4500)
 
       // Send answer to backend
-      //    setTimeout(async () => {
-      //      try {
-      //        await registerAnswer({
-      //          subject: "math",
-      //          level: newGame[type].level,
-      //          subcategory: subcategory,
-      //         score: currentScore + 1,
-      //        })
-      //      } catch (err) {
-      //        console.error("Error registration answer", err)
-      //      }
-      //    }, 3000)
+      setTimeout(async () => {
+        try {
+          await registerAnswer({
+            subject: "swedish",
+            level: newGame[type].level,
+            subcategory: subcategory,
+            score: currentScore + 1,
+          })
+        } catch (err) {
+          console.error("Error registration answer", err)
+        }
+      }, 3000)
     } else if (lives === 1) {
       setTimeout(() => setWrongLottie(true), 1500)
       setTimeout(() => setMessage(`Rätt svar var ${rightAnswer}.`), 2500)
@@ -362,6 +361,7 @@ const ExtraDiv = styled.div`
 Hangman.propTypes = {
   focusRef: PropTypes.any,
   type: PropTypes.string,
+  subcategory: PropTypes.string,
 }
 
 /*
