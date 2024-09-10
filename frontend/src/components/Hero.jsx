@@ -8,7 +8,7 @@ export const Hero = () => {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
 
   const content = {
-    heading: "Välkommen till Pluggin'",
+    heading: "Välkommen till Pluggin'!",
     intro:
       "Sidan där du kan förbättra dina kunskaper i olika skolämnen. Registrera dig för att spara dina framsteg i spelen.",
   }
