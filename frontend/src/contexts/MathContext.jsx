@@ -7,7 +7,9 @@ const MathContext = createContext()
 export const MathProvider = ({ children }) => {
   //Variables for handling connection to backend
   const accessToken = localStorage.getItem("accessToken")
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000"
+  //const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000"
+  const apiUrl =
+    "https://technigo-pluggin.onrender.com" || "http://localhost:4000"
   const [loading, setLoading] = useState(false)
 
   //Object for math-game

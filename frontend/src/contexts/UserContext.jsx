@@ -22,7 +22,8 @@ export const UserProvider = ({ children }) => {
 
   const navigate = useNavigate()
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000"
+  //const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000"
+  const apiUrl = "https://technigo-pluggin.onrender.com" || "http://localhost:4000"
 
   //Load username from localStorage
   useEffect(() => {
@@ -67,9 +68,9 @@ export const UserProvider = ({ children }) => {
       navigate("/spela");
       setIsPanelOpen(false);
     } catch (err) {
-      console.error("No user was found:", err);
+      console.error("No user was found:", err)
       setLoading(false);
-      throw new Error("Invalid username or password");
+      throw new Error("Invalid username or password")
     }
   }
 
@@ -105,7 +106,7 @@ export const UserProvider = ({ children }) => {
       }
 
       const data = await response.json()
-      console.info("Registration success", data)
+      //console.info("Registration success", data)
 
       //Keeps user logged in
       localStorage.setItem("accessToken", data.accessToken)
