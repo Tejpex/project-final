@@ -160,98 +160,53 @@ export const LanguageProvider = ({ children }) => {
 
       const data = await response.json()
       setProgress(data.progress)
-      const scoreOneEnglishTranslate =
-        data.progress.progress.english.translate.levels[0].score
-      const scoreTwoEnglishTranslate =
-        data.progress.progress.english.translate.levels[1].score
-      const scoreThreeEnglishTranslate =
-        data.progress.progress.english.translate.levels[2].score
-
-      const scoreOneSwedishSynonyms =
-        data.progress.progress.swedish.synonyms.levels[0].score
-      const scoreTwoSwedishSynonyms =
-        data.progress.progress.swedish.synonyms.levels[1].score
-      const scoreThreeSwedishSynonyms =
-        data.progress.progress.swedish.synonyms.levels[2].score
-      
-      const scoreOneSwedishHangman =
-        data.progress.progress.swedish.hangman.levels[0].score
-      const scoreTwoSwedishHangman =
-        data.progress.progress.swedish.hangman.levels[1].score
-      const scoreThreeSwedishHangman =
-        data.progress.progress.swedish.hangman.levels[2].score
 
       const levelScore = 20
 
-      if (scoreOneEnglishTranslate < levelScore) {
-        const newGame = [...englishGame]
-        newGame[0].level = 1
-        newGame[0].score = scoreOneEnglishTranslate
-        setEnglishGame(newGame)
-      } else if (scoreTwoEnglishTranslate < levelScore) {
-        const newGame = [...englishGame]
-        newGame[0].level = 2
-        newGame[0].score = scoreTwoEnglishTranslate
-        setEnglishGame(newGame)
-      } else if (scoreThreeEnglishTranslate < levelScore) {
-        const newGame = [...englishGame]
-        newGame[0].level = 3
-        newGame[0].score = scoreThreeEnglishTranslate
-        setEnglishGame(newGame)
-      } else {
-        const newGame = [...englishGame]
-        newGame[0].level = 3
-        newGame[0].score = levelScore
-        setEnglishGame(newGame)
+      const updateGame = (game, scores, index) => {
+        const [scoreOne, scoreTwo, scoreThree] = scores
+        const newGame = [...game]
+        if (scoreOne < levelScore) {
+          newGame[index].level = 1
+          newGame[index].score = scoreOne
+        } else if (scoreTwo < levelScore) {
+          newGame[index].level = 2
+          newGame[index].score = scoreTwo
+        } else if (scoreThree < levelScore) {
+          newGame[index].level = 3
+          newGame[index].score = scoreThree
+        } else {
+          newGame[index].level = 3
+          newGame[index].score = levelScore
+        }
+        return newGame
       }
 
-      if (scoreOneSwedishSynonyms < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[0].level = 1
-        newGame[0].score = scoreOneSwedishSynonyms
-        setSwedishGame(newGame)
-      } else if (scoreTwoSwedishSynonyms < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[0].level = 2
-        newGame[0].score = scoreTwoSwedishSynonyms
-        setSwedishGame(newGame)
-      } else if (scoreThreeSwedishSynonyms < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[0].level = 3
-        newGame[0].score = scoreThreeSwedishSynonyms
-        setSwedishGame(newGame)
-      } else {
-        const newGame = [...swedishGame]
-        newGame[0].level = 3
-        newGame[0].score = levelScore
-        setSwedishGame(newGame)
-      }
+      const englishTranslateScores = [
+        data.progress.progress.english.translate.levels[0].score,
+        data.progress.progress.english.translate.levels[1].score,
+        data.progress.progress.english.translate.levels[2].score,
+      ]
+      setEnglishGame(updateGame(englishGame, englishTranslateScores, 0))
 
-      if (scoreOneSwedishHangman < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[1].level = 1
-        newGame[1].score = scoreOneSwedishHangman
-        setSwedishGame(newGame)
-      } else if (scoreTwoSwedishHangman < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[1].level = 2
-        newGame[1].score = scoreTwoSwedishHangman
-        setSwedishGame(newGame)
-      } else if (scoreThreeSwedishHangman < levelScore) {
-        const newGame = [...swedishGame]
-        newGame[1].level = 3
-        newGame[1].score = scoreThreeSwedishHangman
-        setSwedishGame(newGame)
-      } else {
-        const newGame = [...swedishGame]
-        newGame[1].level = 3
-        newGame[1].score = levelScore
-        setSwedishGame(newGame)
-      }
+      const swedishSynonymsScores = [
+        data.progress.progress.swedish.synonyms.levels[0].score,
+        data.progress.progress.swedish.synonyms.levels[1].score,
+        data.progress.progress.swedish.synonyms.levels[2].score,
+      ]
+      setSwedishGame(updateGame(swedishGame, swedishSynonymsScores, 0))
+
+      const swedishHangmanScores = [
+        data.progress.progress.swedish.hangman.levels[0].score,
+        data.progress.progress.swedish.hangman.levels[1].score,
+        data.progress.progress.swedish.hangman.levels[2].score,
+      ]
+      setSwedishGame(updateGame(swedishGame, swedishHangmanScores, 1))
 
       setLoading(false)
     } catch (error) {
       console.error(error)
+      setLoading(false)
     }
   }
 
