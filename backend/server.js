@@ -15,14 +15,24 @@ const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/pluggIn-users"
 mongoose.connect(mongoUrl)
 mongoose.Promise = Promise
 
-const levelSchema = new mongoose.Schema({
-  level: { type: Number, default: 1 },
-  score: { type: Number, default: 0 },
-  levelScore: { type: Number, default: 20 },
-})
-
 const subcategorySchema = new mongoose.Schema({
-  levels: [levelSchema],
+  levels: [
+    {
+      level: { type: Number, default: 1 },
+      score: { type: Number, default: 0 },
+      levelScore: { type: Number, default: 20 },
+    },
+    {
+      level: { type: Number, default: 2 },
+      score: { type: Number, default: 0 },
+      levelScore: { type: Number, default: 20 },
+    },
+    {
+      level: { type: Number, default: 3 },
+      score: { type: Number, default: 0 },
+      levelScore: { type: Number, default: 20 },
+    },
+  ],
 })
 
 const progressSchema = new mongoose.Schema({
@@ -34,6 +44,7 @@ const progressSchema = new mongoose.Schema({
   },
   swedish: {
     synonyms: subcategorySchema,
+    hangman: subcategorySchema,
   },
   english: {
     translate: subcategorySchema,
@@ -121,16 +132,6 @@ app.get("/users", async (req, res) => {
   }
 })
 
-const createLevels = (questions) => {
-  const uniqueLevels = [...new Set(questions.map((q) => q.level))]
-  const levels = uniqueLevels.map((level) => ({
-    level: level,
-    score: 0,
-    levelScore: 20,
-  }))
-  return levels
-}
-
 //Create user with username, password etc.
 app.post("/users", async (req, res) => {
   try {
@@ -176,6 +177,13 @@ app.post("/users", async (req, res) => {
         },
         swedish: {
           synonyms: {
+            levels: [
+              { level: 1, score: 0, levelScore: 20 },
+              { level: 2, score: 0, levelScore: 20 },
+              { level: 3, score: 0, levelScore: 20 },
+            ],
+          },
+          hangman: {
             levels: [
               { level: 1, score: 0, levelScore: 20 },
               { level: 2, score: 0, levelScore: 20 },
@@ -230,9 +238,9 @@ app.post("/sessions", async (req, res) => {
   }
 })
 
-// Route for storing progress
+//Route for storing progress, adding points to a score
 app.post("/progress", authenticateUser, async (req, res) => {
-  const { subject, subcategory, level, score } = req.body
+  const { subject, subcategory, level } = req.body
   const userId = req.user._id // Get user id
 
   try {
@@ -256,9 +264,39 @@ app.post("/progress", authenticateUser, async (req, res) => {
   }
 })
 
+//Route for adding a new game to all users
+app.post("/games", async (req, res) => {
+  try {
+    const result = await User.updateMany(
+      {},
+      { 
+        $set: {
+          "progress.swedish.hangman.levels": [
+              { level: 1, score: 0, levelScore: 20 },
+              { level: 2, score: 0, levelScore: 20 },
+              { level: 3, score: 0, levelScore: 20 },
+            ]
+        }
+      },
+    )
+    
+    res.status(200).json({ message: "Game added successfully", result })
+  } catch (err) {
+    res.status(500).json({ error: "Failed to add game", details: err.message })
+  }
+})
+
+const createLevels = (questions) => {
+  const uniqueLevels = [...new Set(questions.map((q) => q.level))]
+  const levels = uniqueLevels.map((level) => ({
+    level: level,
+    score: 0,
+    levelScore: 20,
+  }))
+  return levels
+}
+
 // Route to get progress from db
-//app.get("/games", authenticateUser);
-//app.get("/games", async (req, res) => {
 app.get("/progress", authenticateUser, async (req, res) => {
   try {
     const user = req.user // get user
