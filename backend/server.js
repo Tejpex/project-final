@@ -260,7 +260,7 @@ app.post("/progress", authenticateUser, async (req, res) => {
 
     res.status(201).json({ message: "Progress updated successfully" })
   } catch (err) {
-    res.status(500).json({ error: "Failed to update progress" })
+    res.status(500).json({ error: "Failed to update progress", err })
   }
 })
 
