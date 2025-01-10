@@ -10,7 +10,7 @@ dotenv.config() // Load environment variables from the .env file
 // Defining port and connecting to mongoose
 const port = process.env.PORT || 4000
 const app = express()
-const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/pluggIn-users"
+const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/pluggin"
 
 mongoose.connect(mongoUrl)
 mongoose.Promise = Promise
@@ -313,6 +313,38 @@ app.get("/progress", authenticateUser, async (req, res) => {
     }
 
     res.status(200).json({ progress })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Failed to fetch progress" })
+  }
+})
+
+// Route to edit user
+app.patch("/user", authenticateUser, async (req, res) => {
+  try {
+    const user = req.user // get user
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." })
+    }
+
+    
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: "Failed to fetch progress" })
+  }
+})
+
+// Route to delete user
+app.delete("/user", authenticateUser, async (req, res) => {
+  try {
+    const user = req.user // get user
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." })
+    }
+
+    
   } catch (error) {
     console.error(error)
     res.status(500).json({ message: "Failed to fetch progress" })
